@@ -1,0 +1,48 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Courier New';
+}
+
+.heading {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 7vw;
+    text-align: center;
+}
+
+.diffSel {
+    font-size: 1vw;
+    font-family: 'Courier New';
+    border-radius: 0%;
+    background-color: none;
+    border-style: solid;
+    border-color: black;
+    border-width: 0.1em;
+}
+
+.difficulty {
+    font-size: 1vw;
+    text-align: center;
+}
+
+.playBtn {
+    text-align: center;
+    margin: 3vh;
+}
+
+.playBtn button {
+    border-radius: 0%;
+    border-style: solid;
+    border-color: black;
+    font-size: 2vw;
+    font-family: 'Courier New';
+    padding: 10px;
+}
+
+.bottom {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+}
