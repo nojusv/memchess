@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hello, World!</title>
+        <link rel='stylesheet', href='assets/stylesheets/play.css'>
+    </head>
+    <body>
+        <div class='screen'>
+            <div class='logo'>
+                <p>memchess</p>
+            </div>
+            <div class='game'>
+                <div class='container'>
+                    <canvas id='game' width='500' height='500'></canvas>
+                    <br>
+                    <div class='inline'>
+                        <div>
+                            <canvas id='pieces' class='pieces' width='480' height='160'></canvas>
+                        </div>
+                        <div>
+                            <button id='deletePiece' class='deletePiece'>Delete Piece</button>
+                            <br>
+                            <button id='deleteBoard' class='deleteBoard'>Delete Board</button>
+                        </div>
+                    </div>    
+                    <button id='play' class='btn'>Play</button>
+                    <button id='check' class='btn'>Check!</button>
+                    <script src='assets/scripts/remember.js'></script>
+                    <div id='result'>
+                    </div>
+                </div>
+                <div class='rules'>
+                    <p>After clicking play a random chess board layout will be shown to you for a few seconds</p>
+                    <p>You will need to recreate this layout by selecting the pieces from above and putting them in the correct places on the board</p>
+                    <p>If you've placed a piece incorrectly, select the x button an click the piece to be removed</p>
+                    <p>Check your answer using the check button</p>
+                    <p>Click the play button at any time to create a new layout</p>
+                </div>
+            </div>
+            <div class='logo'>
+                <p>memchess</p>
+            </div>
+        </div>
+    </body>
+</html>

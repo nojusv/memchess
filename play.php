@@ -1,0 +1,6 @@
+<!DOCTYPE html>
+<html>
+    <body> 
+        <canvas id="myCanvas" width="200" height="100"></canvas>
+    </body>
+</html>
