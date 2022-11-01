@@ -1,14 +1,15 @@
-const gameCanvas = document.getElementById('game');
-const boardCtx = gameCanvas.getContext('2d');
-const piecesCanvas = document.getElementById('pieces');
-const selectCtx = piecesCanvas.getContext('2d');
+let gameCanvas;
+let boardCtx;
+let piecesCanvas;
+let selectCtx;
+let result;
+let selected;
 
 let boardLayout = [64];
 let userLayout = [64];
 let piecesImg = new Image();
 let chessBoardImg = new Image();
-let selected;
-let editable = 0;
+let cooldown = false;
 
 function loadChessImage() {
     return new Promise((resolve, reject) => {
@@ -30,7 +31,7 @@ function loadPiecesImage() {
 
 function drawBoard () {
     boardCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
-    boardCtx.drawImage(chessBoardImg, 0, 0, 500, 500);
+    boardCtx.drawImage(chessBoardImg, 0, 0, gameCanvas.width, gameCanvas.height);
 }
 
 function fillPieces(pieces, difficulty) {
@@ -53,28 +54,27 @@ function drawPieces(layout) {
     for(let i = 0; i < 64; i++) {
         if(layout[i] != -1) {
             if(layout[i] < 6) {
-                boardCtx.drawImage(piecesImg, 320 * layout[i], 0, 320, 320, ((i % 8) * (gameCanvas.height / 8)) , Math.floor(i / 8) * (gameCanvas.height / 8), 62.5, 62.5);
+                boardCtx.drawImage(piecesImg, 320 * layout[i], 0, 320, 320, ((i % 8) * (gameCanvas.height / 8)) , Math.floor(i / 8) * (gameCanvas.height / 8), gameCanvas.width / 8, gameCanvas.height / 8);
             }
             else {
-                boardCtx.drawImage(piecesImg, (320 * (layout[i] - 6)), 320, 320, 320, ((i % 8) * (gameCanvas.height / 8)) , Math.floor(i / 8) * (gameCanvas.height / 8), 62.5, 62.5);
+                boardCtx.drawImage(piecesImg, (320 * (layout[i] - 6)), 320, 320, 320, ((i % 8) * (gameCanvas.height / 8)) , Math.floor(i / 8) * (gameCanvas.height / 8), gameCanvas.width / 8, gameCanvas.height / 8);
             }
         }
     } 
 }
 
 function drawSelections () {
-    selectCtx.drawImage(piecesImg, 0, 0, 480, 160);
+    selectCtx.drawImage(piecesImg, 0, 0, piecesCanvas.width, piecesCanvas.height);
 }
 
 function drawSelectedBorder(x, y) {
-    document.getElementById('delete').style.border = 'none';
     selectCtx.clearRect(0, 0, piecesCanvas.width, piecesCanvas.height);
     selectCtx.strokeStyle='#000000';
     selectCtx.strokeRect(x, y, piecesCanvas.width / 6, piecesCanvas.height / 2);
 }
 
 function updateSelect() {
-    if(editable != 0) {
+    if(!cooldown) {
         const rect = gameCanvas.getBoundingClientRect();
         const pos = parseInt((event.clientX - rect.left) / (gameCanvas.width / 8)) + (parseInt((event.clientY - rect.top) / (gameCanvas.height / 8))) * 8;
         userLayout[pos] = selected;
@@ -83,7 +83,7 @@ function updateSelect() {
 }
 
 function select(canvas) {
-    if(editable != 0) {
+    if(!cooldown) {
         const rect = canvas.getBoundingClientRect();
         const coords = [event.clientX - rect.left, event.clientY - rect.top];
         selected = parseInt(coords[0] / (canvas.width / 6));
@@ -99,28 +99,45 @@ function select(canvas) {
 }
 
 function play() {
-    editable = 0;
-    for(let i = 0; i < 64; i++) {
-        boardLayout[i] = -1;
-        userLayout[i] = -1;
+    if(!cooldown) {
+        result.innerHTML = '';
+        for(let i = 0; i < 64; i++) {
+            boardLayout[i] = -1;
+            userLayout[i] = -1;
+        }
+        fillPieces(boardLayout, 1);
+        drawPieces(boardLayout);
+        cooldown = true;
+        setTimeout(() => {
+            boardCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+            drawBoard();
+            cooldown = false;
+        }, 4000)
     }
-    fillPieces(boardLayout, 1);
-    drawPieces(boardLayout);
-    setTimeout(() => {
-        boardCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
-        drawBoard();
-        editable = 1;
-    }, 3000)
 }
 
 function check() {
-    for(let i = 0; i < 64; i++) {
-        if(boardLayout[i] != userLayout[i]) {
-            document.getElementById('result').innerHTML += "<p>Not quite right! Try again.</p>";
-            return;
+    if(!cooldown) {
+        for(let i = 0; i < 64; i++) {
+            if(boardLayout[i] != userLayout[i]) {
+                result.innerHTML = "<p>Not quite right! Try again.</p>";
+                return;
+            }
         }
+        result.innerHTML = "<p>That's Correct! Well done.</p>";
     }
-    document.getElementById('result').innerHTML += "<p>That's Correct! Well done.</p>";
+}
+
+function del(mode) {
+    if(mode === 0) {
+        selected = -1;
+    }
+    else {
+        for(let i = 0; i < 64; i++) {
+            userLayout[i] = -1;
+        }
+        drawBoard();
+    }
 }
 
 function setup() {
@@ -130,20 +147,21 @@ function setup() {
             boardLayout[i] = -1;
             userLayout[i] = -1;
         }
+        gameCanvas = document.getElementById('game');
+        boardCtx = gameCanvas.getContext('2d');
+        piecesCanvas = document.getElementById('pieces');
+        selectCtx = piecesCanvas.getContext('2d');
+        result = document.getElementById('result');
         drawBoard();
         drawSelections();
         gameCanvas.addEventListener('click', updateSelect);
         piecesCanvas.addEventListener('click', select.bind(null, piecesCanvas));
         document.getElementById('play').addEventListener('click', play);
         document.getElementById('check').addEventListener('click', check);
-        document.getElementById('delete').addEventListener('click', () => {
-            selected = -1; 
-            selectCtx.clearRect(0, 0, piecesCanvas.width, piecesCanvas.height);
-            selectCtx.drawImage(piecesImg, 0, 0, 480, 160);
-            document.getElementById('delete').style.border = '5px solid #555'});
+        document.getElementById('deletePiece').addEventListener('click', del.bind(null, 0));
+        document.getElementById('deleteBoard').addEventListener('click', del.bind(null, 1));
     })
 }
-
 
 document.addEventListener('DOMContentLoaded', setup, false);
 
