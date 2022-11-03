@@ -2,45 +2,30 @@ body {
     text-align: center;
     font-family: 'Courier New';
     font-size: 15px;
+    margin: 5px;
 }
 
 .btn {
-    font-family: 'Courier New';
-    background-color: none;
-    border: solid black;
-    width: 80px;
-    padding-top: 7px;
-    padding-bottom: 7px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 15px;
-    display: inline-block;
-}
-
-.deletePiece:focus {
-    background-color: #616161;
-}
-
-.deletePiece {
-    font-family: 'Courier New';
-    margin-top: 5px;
-    margin-bottom: 5px;
-    height: 62.5px;
-    width: 62.5px;
-}
-
-.deleteBoard {
-    margin-top: 5px;
-    margin-bottom: 5px;
-    font-family: 'Courier New';
     margin: 5px;
-    height: 62.5px;
+    text-align: center;
+    font-family: 'Courier New';
+    margin-top: 5px;
+    margin-bottom: 5px;
+    height: 60px;
     width: 62.5px;
 }
 
+option {
+    font-family: 'Courier New';
+}
 
-.inline {
+#diff { 
+    height: 30px;
+    font-family: 'Courier New';
+}
+
+.buttons {
+    margin-bottom: 5px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -48,11 +33,22 @@ body {
 
 .screen {
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
 }
 
 .logo {
     font-weight: bold;
     font-size: 40px;
+    width: 100%;
+}
+
+@media only screen and (max-width: 1000px) {
+    .logo {
+        display: none;
+    }
+    .btn {
+        height: 40px;
+        width: 62.5px;
+    }
 }
