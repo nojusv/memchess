@@ -35,10 +35,7 @@ function drawBoard () {
     boardCtx.drawImage(chessBoardImg, 0, 0, gameCanvas.width, gameCanvas.height);
 }
 
-function fillPieces() {
-    let e = document.getElementById('diff');
-    console.log(e.value);
-    let difficulty = parseInt(e.value);
+function fillPieces(difficulty) {
     if(difficulty === 0) {
         max_pieces = 2;
     }
@@ -96,6 +93,7 @@ function select(canvas) {
     if(!cooldown && playing) {
         const rect = canvas.getBoundingClientRect();
         const coords = [event.clientX - rect.left, event.clientY - rect.top];
+        console.log(coords);
         selected = parseInt(coords[0] / (canvas.width / 6));
         if(coords[1] > 80) {
             selected += 6;
@@ -137,12 +135,14 @@ function setSize() {
 function play() {
     if(!cooldown) {
         let timeout;
+        let e = document.getElementById('diff');
+        let difficulty = parseInt(e.value);
         result.innerHTML = '';
         for(let i = 0; i < 64; i++) {
             boardLayout[i] = -1;
             userLayout[i] = -1;
         }
-        fillPieces(boardLayout, 1);
+        fillPieces(difficulty);
         drawPieces(boardLayout);
         drawSelections();
         cooldown = true;
